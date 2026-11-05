@@ -23,5 +23,4 @@ Taula de proves: cas integrat 465 €; diumenge sol; dates invàlides; 30 i 31 d
 
 **Objectes del navegador:** Date, document, window, JSON, localStorage: què resol cada un al projecte.
 
-## Limitacions conegudes
-## Fonts consultades (inclou l'ús d'IA si hi ha autorització expressa del professorat)
+
