@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planificador de viatge amb pressupost</title>
+  <link rel="stylesheet" href="estils.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <main>
+    <h1>Planificador de viatge</h1>
+
+    <section id="formulari">
+      <label>Nom del viatge <input type="text" id="nom"></label>
+      <label>Data de sortida <input type="date" id="sortida"></label>
+      <label>Data de tornada <input type="date" id="tornada"></label>
+      <label>Pressupost (€) <input type="text" id="pressupost"></label>
+      <label>Transport anada i tornada (€) <input type="text" id="transport"></label>
+      <label>Preu per nit (€) <input type="text" id="preuNit"></label>
+      <label>Despesa diària laborable (€) <input type="text" id="despesaLaborable"></label>
+      <label>Despesa diària cap de setmana (€) <input type="text" id="despesaCapSetmana"></label>
+
+      <div class="botons">
+        <button type="button" id="btnCalcular">Calcular</button>
+        <button type="button" id="btnGuardar">Guardar</button>
+        <button type="button" id="btnRecuperar">Recuperar</button>
+        <button type="button" id="btnEsborrar">Esborrar el desat</button>
+        <button type="button" id="btnResum">Obrir resum</button>
+      </div>
+    </section>
+
+    <p id="missatge" role="alert"></p>
+
+    <section id="resum" hidden>
+      <h2 id="titolResum"></h2>
+      <p id="estat" class="estat"></p>
+      <ul id="llistaResum"></ul>
+    </section>
+
+    <section id="detall" hidden>
+      <h2>Detall per dies</h2>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Dia</th>
+              <th>Data</th>
+              <th>Tipus</th>
+              <th>Transport</th>
+              <th>Allotjament</th>
+              <th>Despesa</th>
+              <th>Cost del dia</th>
+              <th>Acumulat</th>
+            </tr>
+          </thead>
+          <tbody id="cosTaula"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+    color: #222;
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+#formulari {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: .8rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    font-size: .9rem;
+}
+
+input {
+    padding: .4rem;
+    margin-top: .2rem;
+}
+
+.botons {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+button {
+    padding: .5rem .9rem;
+    cursor: pointer;
+}
+
+#missatge {
+    min-height: 1.2rem;
+    font-weight: bold;
+}
+
+#missatge.error {
+    color: #b00020;
+}
+
+#missatge.ok {
+    color: #1b5e20;
+}
+
+section {
+    margin-top: 1rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.estat {
+    display: inline-block;
+    padding: .3rem .8rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.estat.suficient {
+    background: #c8e6c9;
+    color: #1b5e20;
+}
+
+.estat.ajustat {
+    background: #fff3cd;
+    color: #7a5c00;
+}
+
+.estat.insuficient {
+    background: #f8d7da;
+    color: #8a1c1c;
+}
+
+.scroll {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: .4rem;
+    text-align: right;
+}
+
+th {
+    background: #eee;
+}
+
+td:nth-child(2),
+td:nth-child(3) {
+    text-align: left;
+}
