@@ -1,4 +1,3 @@
-
 function textACentims(text, nomCamp, permetZero) {
   const net = text.trim().replace(",", ".");
 
@@ -27,10 +26,6 @@ function textACentims(text, nomCamp, permetZero) {
     throw new Error("El camp " + nomCamp + " pot tenir com a màxim dos decimals.");
   }
 
-  if (!Number.isFinite(valor)) {
-    throw new Error("El camp " + nomCamp + " no és un import vàlid.");
-  }
-
   const centims = Math.round(valor * 100);
 
   if (centims === 0 && !permetZero) {
@@ -45,7 +40,7 @@ function textADataUTC(text, nomCamp) {
   if (text === "") {
     throw new Error("La " + nomCamp + " no pot estar buida.");
   }
-  const parts = text.split("-");          
+  const parts = text.split("-");
   const any = Number(parts[0]);
   const mes = Number(parts[1]);
   const dia = Number(parts[2]);
@@ -74,7 +69,7 @@ function llistaDies(sortida, tornada) {
 }
 
 function esCapDeSetmana(data) {
-  const diaSetmana = data.getUTCDay();   // 0 = diumenge, 6 = dissabte
+  const diaSetmana = data.getUTCDay();
   return diaSetmana === 0 || diaSetmana === 6;
 }
 
@@ -83,19 +78,17 @@ function formatData(data) {
   const mes = String(data.getUTCMonth() + 1).padStart(2, "0");
   return dia + "/" + mes + "/" + data.getUTCFullYear();
 }
+
 function calcularPlanificacio(dades) {
-  // Validació del nom (sense espais als extrems)
   const nom = dades.nom.trim();
   if (nom === "") {
     throw new Error("El nom del viatge no pot estar buit.");
   }
 
-  // Dates i llista de dies
   const sortida = textADataUTC(dades.sortida, "data de sortida");
   const tornada = textADataUTC(dades.tornada, "data de tornada");
   const dies = llistaDies(sortida, tornada);
 
-  // Imports en cèntims (només el pressupost no pot ser zero)
   const pressupost = textACentims(dades.pressupost, "pressupost", false);
   const transport = textACentims(dades.transport, "transport", true);
   const preuNit = textACentims(dades.preuNit, "preu per nit", true);
@@ -112,16 +105,12 @@ function calcularPlanificacio(dades) {
   let diesCapSetmana = 0;
   const files = [];
 
-  // Un recorregut per cada dia del viatge
   for (let i = 0; i < nombreDies; i++) {
     const data = dies[i];
     const capSetmana = esCapDeSetmana(data);
 
-    // El transport es cobra només una vegada: el primer dia
     const transportDia = (i === 0) ? transport : 0;
-    // L'allotjament es cobra cada dia menys l'últim (no hi ha nit l'últim dia)
     const allotjamentDia = (i < nombreDies - 1) ? preuNit : 0;
-    // La despesa diària depèn de si és cap de setmana
     const despesaDia = capSetmana ? despesaCapSetmana : despesaLaborable;
 
     if (capSetmana) {
@@ -150,11 +139,10 @@ function calcularPlanificacio(dades) {
   const saldo = pressupost - costTotal;
   const mitjana = Math.round(costTotal / nombreDies);
 
-  // Classificació (comparam en cèntims, sense decimals)
   let estat;
   if (costTotal > pressupost) {
     estat = "Insuficient";
-  } else if (costTotal * 10 >= pressupost * 9) {   // cost >= 90 % del pressupost
+  } else if (costTotal * 10 >= pressupost * 9) {
     estat = "Ajustat";
   } else {
     estat = "Suficient";
@@ -162,6 +150,8 @@ function calcularPlanificacio(dades) {
 
   return {
     nom: nom,
+    sortidaOriginal: dades.sortida,
+    tornadaOriginal: dades.tornada,
     sortida: formatData(sortida),
     tornada: formatData(tornada),
     dies: nombreDies,
@@ -170,6 +160,9 @@ function calcularPlanificacio(dades) {
     diesCapSetmana: diesCapSetmana,
     pressupost: pressupost,
     transport: transport,
+    preuNit: dades.preuNit,
+    despesaLaborable: dades.despesaLaborable,
+    despesaCapSetmana: dades.despesaCapSetmana,
     totalAllotjament: totalAllotjament,
     totalDespesa: totalDespesa,
     costTotal: costTotal,
@@ -179,7 +172,6 @@ function calcularPlanificacio(dades) {
     files: files
   };
 }
-
 
 function formatEuros(centims) {
   return (centims / 100).toFixed(2).replace(".", ",") + " €";
@@ -197,12 +189,19 @@ function llegirFormulari() {
     despesaCapSetmana: document.getElementById("despesaCapSetmana").value
   };
 }
+
 function mostrarMissatge(text, tipus) {
   const missatge = document.getElementById("missatge");
-  missatge.textContent = text;
-  missatge.className = tipus;
+  if (missatge) {
+    missatge.textContent = text;
+    missatge.className = tipus;
+    setTimeout(() => {
+      missatge.textContent = "";
+      missatge.className = "";
+    }, 3000);
+  }
 }
-// Crea una cel·la <td> amb el text indicat i l'afegeix a la fila
+
 function afegirCela(fila, text) {
   const td = document.createElement("td");
   td.textContent = text;
@@ -213,7 +212,6 @@ function mostrarResultat(resultat) {
   document.getElementById("titolResum").textContent =
     resultat.nom + " (" + resultat.sortida + " - " + resultat.tornada + ")";
 
-  // Estat amb text i color (suficient, ajustat o insuficient)
   const estat = document.getElementById("estat");
   estat.textContent = "Estat: " + resultat.estat;
   estat.className = "estat " + resultat.estat.toLowerCase();
@@ -238,7 +236,6 @@ function mostrarResultat(resultat) {
     llista.appendChild(li);
   }
 
-  // Taula del detall: es buida abans per no duplicar files
   const cos = document.getElementById("cosTaula");
   cos.textContent = "";
   for (let i = 0; i < resultat.files.length; i++) {
@@ -259,12 +256,92 @@ function mostrarResultat(resultat) {
   document.getElementById("detall").hidden = false;
 }
 
+let ultimResultat = null;
 
-  const CLAU_DESAT = "planificadorViatge.planificacio";
-function guardar() { }
-function recuperar() { }
-function esborrar() { }
-function obrirResum() {  }
+function guardar() {
+    try {
+        const dades = llegirFormulari();
+        const resultat = calcularPlanificacio(dades); // Valida abans de desar
+        
+        localStorage.setItem("dwc.ut3.fitxa", JSON.stringify(resultat));
+        mostrarMissatge("Planificació desada correctament.", "ok");
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+function recuperar() {
+    try {
+        const text = localStorage.getItem("dwc.ut3.fitxa");
+        if (text === null) {
+            throw new Error("No hi ha cap planificació desada a LocalStorage.");
+        }
+
+        const resultat = JSON.parse(text);
+
+        // Omplir de nou els inputs de l'HTML
+        document.querySelector("#nom").value = resultat.nom || "";
+        document.querySelector("#sortida").value = resultat.sortidaOriginal || "";
+        document.querySelector("#tornada").value = resultat.tornadaOriginal || "";
+        document.querySelector("#pressupost").value = (resultat.pressupost / 100).toFixed(2);
+        document.querySelector("#transport").value = (resultat.transport / 100).toFixed(2);
+        document.querySelector("#preuNit").value = resultat.preuNit || "";
+        document.querySelector("#despesaLaborable").value = resultat.despesaLaborable || "";
+        document.querySelector("#despesaCapSetmana").value = resultat.despesaCapSetmana || "";
+
+        ultimResultat = resultat;
+        mostrarResultat(resultat);
+        mostrarMissatge("Planificació recuperada i recalculada.", "ok");
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+function esborrar() {
+    const CLAU = "dwc.ut3.fitxa";
+    const CLAU_RESUM = "dwc.ut3.resum";
+
+    const confirmacio = confirm("Estàs segur que vols esborrar les dades desades?");
+    if (confirmacio) {
+        localStorage.removeItem(CLAU);
+        localStorage.removeItem(CLAU_RESUM);
+        
+        // Netejar la interfície (comprovant si existeixen les funcions/elements)
+        if (typeof buidarResultat === "function") {
+            buidarResultat();
+        }
+        if (typeof mostrarMissatge === "function") {
+            mostrarMissatge("S'han eliminat les dades desades.", "ok");
+        }
+        
+        const secResum = document.getElementById("resum");
+        const secDetall = document.getElementById("detall");
+        if (secResum) secResum.hidden = true;
+        if (secDetall) secDetall.hidden = true;
+    } else {
+        if (typeof mostrarMissatge === "function") {
+            mostrarMissatge("S'ha cancel·lat l'eliminació.", "error");
+        }
+    }
+}
+function obrirResum() {
+    try {
+        const dades = llegirFormulari();
+        const resultat = calcularPlanificacio(dades); // Validació prèvia
+
+        // Guardem instantània independent per al resum
+        localStorage.setItem("dwc.ut3.resum", JSON.stringify(resultat));
+
+        const url = "resum.html?v=" + Date.now();
+        const finestra = window.open(url, "resumDwc");
+
+        if (finestra === null || finestra.closed || typeof finestra.closed === 'undefined') {
+            alert("L'obertura de la nova finestra ha estat bloquejada pel navegador.");
+        }
+    } catch (error) {
+        alert(error.message);
+    }
+}
 
 document.getElementById("btnCalcular").addEventListener("click", function () {
   try {
@@ -281,6 +358,7 @@ document.getElementById("btnCalcular").addEventListener("click", function () {
     mostrarMissatge(error.message, "error");
   }
 });
+
 document.getElementById("btnGuardar").addEventListener("click", guardar);
 document.getElementById("btnRecuperar").addEventListener("click", recuperar);
 document.getElementById("btnEsborrar").addEventListener("click", esborrar);
