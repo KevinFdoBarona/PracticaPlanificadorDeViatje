@@ -261,7 +261,7 @@ let ultimResultat = null;
 function guardar() {
     try {
         const dades = llegirFormulari();
-        const resultat = calcularPlanificacio(dades); // Valida abans de desar
+        const resultat = calcularPlanificacio(dades); 
         
         localStorage.setItem("dwc.ut3.fitxa", JSON.stringify(resultat));
         mostrarMissatge("Planificació desada correctament.", "ok");
@@ -279,7 +279,6 @@ function recuperar() {
 
         const resultat = JSON.parse(text);
 
-        // Omplir de nou els inputs de l'HTML
         document.querySelector("#nom").value = resultat.nom || "";
         document.querySelector("#sortida").value = resultat.sortidaOriginal || "";
         document.querySelector("#tornada").value = resultat.tornadaOriginal || "";
@@ -306,7 +305,6 @@ function esborrar() {
         localStorage.removeItem(CLAU);
         localStorage.removeItem(CLAU_RESUM);
         
-        // Netejar la interfície (comprovant si existeixen les funcions/elements)
         if (typeof buidarResultat === "function") {
             buidarResultat();
         }
@@ -327,9 +325,7 @@ function esborrar() {
 function obrirResum() {
     try {
         const dades = llegirFormulari();
-        const resultat = calcularPlanificacio(dades); // Validació prèvia
-
-        // Guardem instantània independent per al resum
+        const resultat = calcularPlanificacio(dades); 
         localStorage.setItem("dwc.ut3.resum", JSON.stringify(resultat));
 
         const url = "resum.html?v=" + Date.now();
