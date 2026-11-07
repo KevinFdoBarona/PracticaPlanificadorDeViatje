@@ -8,10 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
-                // Interpretem el text JSON emmagatzemat
                 const dades = JSON.parse(text);
 
-                // Validació bàsica o càlcul de dies amb Date UTC
                 const inici = new Date(dades.sortida + "T00:00:00Z");
                 const final = new Date(dades.tornada + "T00:00:00Z");
                 const dies = Math.round((final.getTime() - inici.getTime()) / 86400000) + 1;
